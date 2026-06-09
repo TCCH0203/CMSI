@@ -157,8 +157,8 @@ def generate_doc():
     try:
         # ================= PATH SETUP =================
         TEMPLATE_PATH = os.path.join(BASE_DIR, "template.docx")
-        OUTPUT_PATH = os.path.join(BASE_DIR, "asset", "output.docx")
-        TEMP_PATH = os.path.join(BASE_DIR, "asset", "temp.docx")
+        OUTPUT_PATH = os.path.join(BASE_DIR, "output.docx")
+        TEMP_PATH = os.path.join(BASE_DIR, "temp.docx")
 
         if not os.path.exists(TEMPLATE_PATH):
             return "Template file not found", 500
@@ -373,6 +373,9 @@ def generate_doc():
 
             "formatted_location":
                 data.get("formatted_location", ""),
+            
+            "period":
+                data.get("period", ""),
 
             "days":
                 data.get("days", []),
@@ -658,6 +661,6 @@ if __name__ == "__main__":
     app.run(
         host="127.0.0.1",
         port=5000,
-        debug=True,
+        debug=False,
         use_reloader=False
     )
