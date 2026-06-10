@@ -15,7 +15,7 @@ else:
 # =========================
 # PATHS
 # =========================
-EXCEL_PATH = os.path.join(BASE_DIR, "contact_list.xlsx")
+EXCEL_PATH = os.path.join(BASE_DIR, "asset", "contact_list.xlsx")
 DB_PATH = os.path.join(BASE_DIR, "database.db")
 
 # =========================
