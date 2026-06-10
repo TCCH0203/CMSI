@@ -21,7 +21,7 @@ FIRST TIME SETUP (do this once):
    (Press Cmd + Space, type "Terminal", press Enter)
 3. Paste this command and press Enter:
 
-   xattr -cr ~/Downloads/Schedule\ Manager && chmod +x ~/Downloads/Schedule\ Manager/run.command
+   xattr -cr ~/Downloads/Schedule\ Manager_raw && chmod +x ~/Downloads/Schedule\ Manager_raw/run.command
 
    (If your folder is not in Downloads, drag the Schedule Manager folder
    into the Terminal window instead of typing the path)
