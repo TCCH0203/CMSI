@@ -39,41 +39,22 @@ IF %ERRORLEVEL% EQU 0 ( set PYTHON=python3 & goto FOUND )
 echo Python not found. Installing automatically...
 echo.
 
-set WINGET_OK=0
-
-winget --version >nul 2>&1
-IF %ERRORLEVEL% EQU 0 (
-    echo Resetting winget sources...
-    winget source reset --force >nul 2>&1
-
-    echo Installing Python via winget...
-    winget install --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements --source winget
-    IF %ERRORLEVEL% EQU 0 ( set WINGET_OK=1 )
-
-    IF %WINGET_OK% EQU 0 (
-        winget install --id Python.Python.3 --accept-package-agreements --accept-source-agreements --source winget
-        IF %ERRORLEVEL% EQU 0 ( set WINGET_OK=1 )
-    )
+echo Downloading Python installer...
+curl -L -o "%TEMP%\python_installer.exe" https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe
+IF %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo Could not download Python automatically.
+    echo Please download and install Python from:
+    echo https://www.python.org/downloads/
+    echo.
+    echo IMPORTANT: Check "Add Python to PATH" during installation.
+    echo Then double-click run.bat again.
+    echo.
+    pause
+    exit
 )
-
-IF %WINGET_OK% EQU 0 (
-    echo winget unavailable or failed. Falling back to direct download...
-    curl -L -o "%TEMP%\python_installer.exe" https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe
-    IF %ERRORLEVEL% NEQ 0 (
-        echo.
-        echo Could not download Python automatically.
-        echo Please download and install Python from:
-        echo https://www.python.org/downloads/
-        echo.
-        echo IMPORTANT: Check "Add Python to PATH" during installation.
-        echo Then double-click run.bat again.
-        echo.
-        pause
-        exit
-    )
-    echo Running Python installer...
-    "%TEMP%\python_installer.exe" /quiet InstallAllUsers=0 PrependPath=1 Include_test=0
-)
+echo Running Python installer...
+"%TEMP%\python_installer.exe" /quiet InstallAllUsers=0 PrependPath=1 Include_test=0
 
 :: Refresh PATH from registry
 for /f "tokens=2*" %%A in ('reg query "HKCU\Environment" /v PATH 2^>nul') do set "USER_PATH=%%B"
