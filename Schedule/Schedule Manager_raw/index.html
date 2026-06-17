@@ -784,31 +784,9 @@ function updateMeetingType(wrapper) {
     const meetingBox = wrapper.parentElement;
     const select = meetingBox.querySelector('select[id^="meetingtype-"]');
     if (!select) return;
-
-    const participantEls = wrapper.querySelectorAll('.participant-set');
-    const count = participantEls.length;
+    const count = wrapper.querySelectorAll('.participant-set').length;
 
     select.value = count > 1 ? "小组会" : "1x1";
-
-    // ====================================================
-    // AUTO ADDRESS
-    // 1x1 (0 or 1 participant) → fetch address from that participant
-    // 小组会 (more than 1)      → always empty
-    // ====================================================
-    const addressInput = meetingBox.querySelector('.meeting-address');
-
-    if (addressInput) {
-
-        if (count === 1) {
-
-            addressInput.value =
-                participantEls[0].querySelector('.addr')?.value || "";
-
-        } else {
-
-            addressInput.value = "";
-        }
-    }
 }
 
 // ========================================================
@@ -1032,26 +1010,25 @@ function collectScheduleData() {
             const participants = [];
 
             // ====================================================
-            // CLEAN ADDRESS LOGIC (FIXED)
+            // ADDRESS LOGIC
+            // 1x1      → use the participant's database address
+            // 小组会    → always empty
             // ====================================================
             let meetingAddress = "";
 
-            // safer DOM resolution
-            const addressInput = m.querySelector('.meeting-address');
+            if (meetingType === "1x1" && participantEls.length > 0) {
 
-            if (addressInput) {
-                meetingAddress = addressInput.value?.trim() || "";
-            }
+                meetingAddress =
+                    participantEls[0].querySelector('.addr')?.value || "";
 
-            // fallback rule (only if 1x1 and single participant)
-            if (meetingType === "1x1" && participantEls.length === 1) {
+            } else if (meetingType !== "小组会") {
 
-                // ONLY use participant address if it exists
-                const fallbackAddr =
-                    participantEls[0].querySelector('.addr')?.value;
+                // fallback for any other/blank meeting type:
+                // keep manual input if present
+                const addressInput = m.querySelector('.meeting-address');
 
-                if (fallbackAddr) {
-                    meetingAddress = fallbackAddr;
+                if (addressInput) {
+                    meetingAddress = addressInput.value?.trim() || "";
                 }
             }
 
