@@ -136,6 +136,11 @@ button {
 
     <button onclick="generateDoc()">📄 Generate Word Doc</button>
 
+    <label style="display:flex; align-items:center; gap:6px; font-size:14px;">
+        🎨 Theme Color:
+        <input type="color" id="themeColor" value="#002060">
+    </label>
+
 </div>
 
 <hr>
@@ -1501,6 +1506,9 @@ async function generateDoc() {
     // ====================================================
     // SEND TO BACKEND
     // ====================================================
+    const themeColor =
+        document.getElementById("themeColor").value.replace("#", "").toUpperCase();
+
     const res = await fetch("/generate-doc", {
 
         method: "POST",
@@ -1509,7 +1517,7 @@ async function generateDoc() {
             "Content-Type": "application/json"
         },
 
-        body: JSON.stringify(scheduleData)
+        body: JSON.stringify({ ...scheduleData, themeColor })
     });
 
     if (!res.ok) {

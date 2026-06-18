@@ -33,6 +33,55 @@ DB_PATH = os.path.join(BASE_DIR, "database.db")
 
 
 # =========================
+# THEME COLOR REPLACEMENT
+# =========================
+def apply_theme_color(docx_path, old_hex, new_hex):
+    """
+    Replace every occurrence of old_hex (e.g. '002060') with new_hex
+    inside a .docx file's internal XML (document, headers, footers).
+    """
+    import zipfile
+    import shutil
+    import tempfile
+
+    old_hex = old_hex.upper()
+    new_hex = new_hex.upper()
+
+    tmp_fd, tmp_path = tempfile.mkstemp(suffix=".docx")
+    os.close(tmp_fd)
+
+    try:
+        with zipfile.ZipFile(docx_path, "r") as zin:
+            with zipfile.ZipFile(tmp_path, "w", zipfile.ZIP_DEFLATED) as zout:
+
+                for item in zin.infolist():
+
+                    content = zin.read(item.filename)
+
+                    is_xml_target = (
+                        item.filename.startswith("word/")
+                        and item.filename.endswith(".xml")
+                    )
+
+                    if is_xml_target:
+                        try:
+                            text = content.decode("utf-8")
+                            text = text.replace(old_hex, new_hex)
+                            text = text.replace(old_hex.lower(), new_hex)
+                            content = text.encode("utf-8")
+                        except UnicodeDecodeError:
+                            pass
+
+                    zout.writestr(item, content)
+
+        shutil.move(tmp_path, docx_path)
+
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+
+
+# =========================
 # DB
 # =========================
 def get_db():
@@ -631,6 +680,15 @@ def generate_doc():
 
         # ================= SAVE FINAL =================
         document.save(OUTPUT_PATH)
+
+        # ================= APPLY THEME COLOR =================
+        theme_color = (data.get("themeColor") or "").strip().upper()
+
+        # Only replace if it's a valid 6-digit hex color and different from default
+        import re
+
+        if re.fullmatch(r"[0-9A-F]{6}", theme_color) and theme_color != "002060":
+            apply_theme_color(OUTPUT_PATH, "002060", theme_color)
 
         return send_file(
             OUTPUT_PATH,
