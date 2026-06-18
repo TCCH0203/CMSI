@@ -59,7 +59,7 @@ Copy and paste the database into the database tab in the excel
 
 Input the meeting details in the Schedule tab, then press Paste Value and Save. Open the Word doc, press yes, select the Result tab. At the tool bar, go to Mailing, press edit individual Documents. The day of the week (星期X) is automatically detected.
 
-Press 加到Tracker to add to tracker, PLEASE NOTE THAT ONLY REMAIN THE TIME OF THE MEETINGS NEEDED IN COLUMN A, OTHERWISE THE Tracker TAB WILL BE BUGGED.
+Press 加到Tracker to add to tracker, PLEASE ONLY REMAIN THE TIME OF THE MEETINGS NEEDED IN COLUMN A, OTHERWISE THE Tracker TAB WILL BE BUGGED.
 
 =============================
 LIMITATIONS
